@@ -248,7 +248,7 @@ class AdminExaminationController extends AdminBaseController
                     //已完成。查询下一个步骤，更新用户状态
                     $examinationProcessModel = new ExaminationProcessModel();
                     $next_examination = $examinationProcessModel->where(['use_status'=>'1'])->where('id','>',$data['process_id'])->field('id')->order('order')->find();
-                    $flg = $userModel->where(['id'=>$data['user_id']])->update(['current_coordinates'=>$next_examination['id']]);
+                    $flg = $userModel->where(['id'=>$data['user_id']])->update(['current_coordinates'=>$next_examination['id'],'memo'=>$data['memo']]);
                     if($flg){
                         Db::commit();
                         $this->success('操作成功！', url('AdminExamination/operate'));
@@ -329,7 +329,7 @@ class AdminExaminationController extends AdminBaseController
                             //已完成。查询下一个步骤，更新用户状态
                             $examinationProcessModel = new ExaminationProcessModel();
                             $next_examination = $examinationProcessModel->where(['use_status'=>'1'])->where('id','>',$data['process_id'])->field('id')->order('order')->find();
-                            $flg = $userModel->where(['id'=>$data['user_id']])->update(['current_coordinates'=>$next_examination['id']]);
+                            $flg = $userModel->where(['id'=>$data['user_id']])->update(['current_coordinates'=>$next_examination['id'],'memo'=>$data['memo']]);
                             if($flg){
                                 Db::commit();
                                 $this->success('操作成功！', url('AdminExamination/operate'));
@@ -359,6 +359,15 @@ class AdminExaminationController extends AdminBaseController
             $this->error('重复操作！', url('AdminExamination/operate'));
         }
 
+    }
+
+    public function log($id){
+        $processLogModel = new ProcessLogModel();
+        $infos = $processLogModel->where(['user_id'=>$id])->order('create_time ASC')->select();
+
+        $this->assign('infos', $infos);
+        // 渲染模板输出
+        return $this->fetch();
     }
 
 }

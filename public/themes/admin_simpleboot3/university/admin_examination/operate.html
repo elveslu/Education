@@ -45,6 +45,7 @@
                 <th>当前流程</th>
                 <th>处理状态</th>
                 <th>注册时间</th>
+                <th width="400">备注</th>
                 <th>操作</th>
             </tr>
             </thead>
@@ -67,6 +68,7 @@
                         <if condition="$vo.current_coordinates_status == '2'">处理完成</if>
                     </td>
                     <td>{:date('Y-m-d H:i:s',$vo['create_time'])}</td>
+                    <td>{$vo.memo}</td>
                     <td>
                         <a class="btn btn-xs btn-primary" href="{:url('AdminExamination/goOperate',['id'=>$vo.id])}">操作</a>
                     </td>

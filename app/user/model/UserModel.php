@@ -370,6 +370,45 @@ class UserModel extends Model
         return -1;
     }
 
+    //后台添加user用户
+    public function editUser($user){
+        $userModel = new UserModel();
+
+        $avatar = '';
+        if (!empty($user['photo_path']['thumbnail'])) {
+            $avatar = cmf_asset_relative_url($user['photo_path']['thumbnail']);
+        }
+
+        $data   = [
+            'mobile'          => empty($user['mobile']) ? '' : $user['mobile'],
+            'user_nickname'   => $user['user_nickname'],
+            'avatar'          => $avatar,
+            'sex'             => $user['sex'],
+            'school'         =>$user['school'],
+            'major'          =>$user['major'],
+            'age'            =>$user['age'],
+            'degree'            =>$user['degree'],
+            'location'            =>$user['location'],
+            'highest_education'            =>$user['highest_education'],
+            'address'            =>$user['address'],
+            'nation'            =>$user['nation'],
+            'work_unit'            =>$user['work_unit'],
+            'political_outlook'            =>$user['political_outlook'],
+            'authentication'            =>$user['authentication'],
+            'Recommender'            =>$user['Recommender'],
+            'memo'            =>$user['memo'],
+            'id_card'            =>$user['id_card'],
+        ];
+
+        if(key_exists('password',$user)){
+            $data['user_pass'] = cmf_password($user['password']);
+        }
+
+        $user_id = $userModel->where(['id'=>$user['id']])->update($data);
+        return $user_id;
+
+    }
+
     //关联的学校
     public function university()
     {

@@ -1,0 +1,299 @@
+<include file="public@header"/>
+<style>
+    .dropdown {
+        position: relative;
+        font-size: 14px;
+        color: #333;
+    }
+    .dropdown .dropdown-list {
+        padding: 12px;
+        background: #fff;
+        position: absolute;
+        top: 30px;
+        left: 2px;
+        right: 2px;
+        box-shadow: 0 1px 2px 1px rgba(0, 0, 0, 0.15);
+        transform-origin: 50% 0;
+        transform: scale(1, 0);
+        transition: transform .15s ease-in-out .15s;
+        max-height: 26vh;
+        overflow-y: scroll;
+    }
+    .dropdown .dropdown-option {
+        display: block;
+        padding: 8px 12px;
+        opacity: 0;
+        transition: opacity .15s ease-in-out;
+        font-weight: normal;
+    }
+    .dropdown .dropdown-label {
+        display: block;
+        height: 30px;
+        background: #fff;
+        border: 1px solid #ccc;
+        padding: 6px 12px;
+        line-height: 1;
+        cursor: pointer;
+        max-width: 550px;
+        overflow-x: hidden;
+        white-space: nowrap;
+        border-radius: 4px;
+    }
+    .dropdown .dropdown-label:before {
+        content: '▼';
+        float: right;
+    }
+    .dropdown.on .dropdown-list {
+        transform: scale(1, 1);
+        transition-delay: 0s;
+    }
+    .dropdown.on .dropdown-list .dropdown-option {
+        opacity: 1;
+        transition-delay: .2s;
+    }
+    .dropdown.on .dropdown-label:before {
+        content: '▲';
+    }
+    .dropdown [type="checkbox"] {
+        position: relative;
+        top: -1px;
+        margin-right: 4px;
+    }
+</style>
+</head>
+<body>
+<div class="wrap js-check-wrap">
+    <ul class="nav nav-tabs">
+        <li><a href="{:url('AdminUser/index')}">学员列表</a></li>
+        <li class="active"><a href="javascript:;">编辑学员</a></li>
+    </ul>
+    <form action="{:url('AdminUser/editPost')}" method="post" class="form-horizontal js-ajax-form margin-top-20">
+        <div class="row">
+            <div class="col-md-9">
+                必填项
+                <input class="form-control" type="hidden" value="{$info.id}" name="id"/>
+                <table class="table table-bordered">
+                    <tr>
+                        <th width="100">真实姓名<span class="form-required">*</span></th>
+                        <td>
+                            <input class="form-control" type="text" name="user_nickname" value="{$info.user_nickname}"/>
+                        </td>
+                        <th width="100">身份证号<span class="form-required">*</span></th>
+                        <td>
+                            <input class="form-control" type="text" name="id_card" value="{$info.id_card}"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th width="100">联系电话<span class="form-required">*</span></th>
+                        <td width="500">
+                            <input class="form-control" type="text" name="mobile" value="{$info.mobile}"/>
+                        </td>
+                        <th width="100">性别<span class="form-required carNumber">*</span></th>
+                        <td>
+                            <select class="form-control" name="sex">
+                                <option value="1" <if condition="$info.sex == '1'">selected</if>>男</option>
+                                <option value="2" <if condition="$info.sex == '2'">selected</if>>女</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th width="100">选择学校<span class="form-required">*</span></th>
+                        <td width="40%">
+                            <div class="col-md-6 col-sm-10">
+                                <input class="form-control" type="text" style="width:400px;"  value=""
+                                       placeholder="请选择院校" onclick="doSelectUniversity();" id="js-university-name-input"
+                                       readonly/>
+                                <input class="form-control" type="hidden" value="{$info.school}" name="school"
+                                       id="js-university-id-input"/>
+                            </div>
+                        </td>
+                        <th width="100">选择专业<span class="form-required carNumber">*</span></th>
+                        <td width="40%">
+                            <div class="col-md-6 col-sm-10">
+                                <input class="form-control" type="text" style="width:400px;"  value=""
+                                       placeholder="请选择专业" onclick="doSelectProfessional();" id="js-Professional-name-input"
+                                       readonly/>
+                                <input class="form-control" type="hidden" value="{$info.major}" name="major"
+                                       id="js-Professional-id-input"/>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th width="100">密码<span class="form-required">*</span></th>
+                        <td width="500">
+                            <input class="form-control" type="text" name="password"/>
+                        </td>
+                    </tr>
+
+                </table>
+
+                选填项
+                <table class="table table-bordered">
+                    <tr>
+                        <th width="100">年龄</th>
+                        <td>
+                            <input class="form-control" type="text" name="age" value="{$info.age}"/>
+                        </td>
+                        <th width="100">是否需要学位</th>
+                        <td>
+                            <select class="form-control" name="degree">
+                                <option value="0" <if condition="$info.degree == '0'">selected</if>>不需要</option>
+                                <option value="1" <if condition="$info.degree == '1'">selected</if>>需要</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th width="100">参考地点</th>
+                        <td>
+                            <input class="form-control" type="text" name="location" value="{$info.location}"/>
+                        </td>
+                        <th width="100">当前最高学历</th>
+                        <td>
+                            <input class="form-control" type="text" name="highest_education" value="{$info.highest_education}"/>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th width="100">通讯地址</th>
+                        <td>
+                            <input class="form-control" type="text" name="address" value="{$info.address}"/>
+                        </td>
+                        <th width="100">民族</th>
+                        <td>
+                            <input class="form-control" type="text" name="nation" value="{$info.nation}"/>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th width="100">工作单位</th>
+                        <td>
+                            <input class="form-control" type="text" name="work_unit" value="{$info.work_unit}"/>
+                        </td>
+                        <th width="100">政治面貌</th>
+                        <td>
+                            <input class="form-control" type="text" name="political_outlook" value="{$info.political_outlook}"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th width="100">是否学信网认证</th>
+                        <td>
+                            <select class="form-control" name="authentication">
+                                <option value="0" <if condition="$info.authentication == '0'">selected</if>>认证</option>
+                                <option value="1" <if condition="$info.authentication == '1'">selected</if>>未认证</option>
+                            </select>
+                        </td>
+                        <th width="100">推荐人</th>
+                        <td>
+                            <div class="col-md-6 col-sm-10">
+                                <input class="form-control" type="text" style="width:400px;"  value=""
+                                       placeholder="请选择推荐人" onclick="doSelectRecommender();" id="js-Recommender-name-input"
+                                       readonly/>
+                                <input class="form-control" type="hidden" value="{$info.Recommender}" name="Recommender"
+                                       id="js-Recommender-id-input"/>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th width="10%">备注<span class="form-required"></span></th>
+                        <td width="90%" colspan="3">
+                            <textarea class="form-control" id="input-remark" name="memo">{$info.memo}</textarea>
+                        </td>
+                    </tr>
+
+                </table>
+
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-primary js-ajax-submit">{:lang('ADD')}</button>
+                        <a class="btn btn-default" href="javascript:history.back(-1);">{:lang('BACK')}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript" src="__STATIC__/js/admin.js"></script>
+<script type="text/javascript" src="__STATIC__/js/city.data.js"></script>
+
+<script type="text/javascript">
+    (function($) {
+        initCountry();
+    })(jQuery);
+
+    //选择院校
+    function doSelectUniversity() {
+        var selectedCategoriesId = $('#js-university-id-input').val();
+        openIframeLayer("{:url('university/AdminUniversity/select')}?ids=" + selectedCategoriesId, '请选择所属院校', {
+            area: ['700px', '400px'],
+            btn: ['确定', '取消'],
+            move: '.layui-layer-title',
+            moveOut: true,
+            yes: function (index, layero) {
+                //do something
+                var iframeWin          = window[layero.find('iframe')[0]['name']];
+                var selectedCategories = iframeWin.confirm();
+                if (selectedCategories.selectedCategoriesId.length == 0) {
+                    layer.msg('请选择院校');
+                    return;
+                }
+                $('#js-university-id-input').val(selectedCategories.selectedCategoriesId.join(','));
+                $('#js-university-name-input').val(selectedCategories.selectedCategoriesName.join(' '));
+                layer.close(index); //如果设定了yes回调，需进行手工关闭
+            }
+        });
+    }
+
+    //选择类目
+    function doSelectProfessional() {
+        var selectedCategoriesId = $('#js-Professional-id-input').val();
+        var selectedUniversityId = $('#js-university-id-input').val();
+        if (!selectedUniversityId) {
+            layer.msg('请选择院校');
+            return;
+        }
+        openIframeLayer("{:url('university/AdminProfessional/select')}?ids=" + selectedCategoriesId + "&university_id=" + selectedUniversityId, '请选择所属专业', {
+            area: ['700px', '400px'],
+            btn: ['确定', '取消'],
+            move: '.layui-layer-title',
+            moveOut: true,
+            yes: function (index, layero) {
+                //do something
+                var iframeWin          = window[layero.find('iframe')[0]['name']];
+                var selectedCategories = iframeWin.confirm();
+                if (selectedCategories.selectedCategoriesId.length == 0) {
+                    layer.msg('请选择专业');
+                    return;
+                }
+                $('#js-Professional-id-input').val(selectedCategories.selectedCategoriesId.join(','));
+                $('#js-Professional-name-input').val(selectedCategories.selectedCategoriesName.join(' '));
+                layer.close(index); //如果设定了yes回调，需进行手工关闭
+            }
+        });
+    }
+
+    //选择推荐人
+    function doSelectRecommender() {
+        var selectedCategoriesId = $('#js-Recommender-id-input').val();
+        openIframeLayer("{:url('user/AdminUser/select')}?ids=" + selectedCategoriesId, '请选择所属专业', {
+            area: ['700px', '400px'],
+            btn: ['确定', '取消'],
+            move: '.layui-layer-title',
+            moveOut: true,
+            yes: function (index, layero) {
+                //do something
+                var iframeWin = window[layero.find('iframe')[0]['name']];
+                var selectedCategories = iframeWin.confirm();
+                if (selectedCategories.selectedCategoriesId.length == 0) {
+                    layer.msg('请选择推荐人');
+                    return;
+                }
+                $('#js-Recommender-id-input').val(selectedCategories.selectedCategoriesId.join(','));
+                $('#js-Recommender-name-input').val(selectedCategories.selectedCategoriesName.join(' '));
+                layer.close(index); //如果设定了yes回调，需进行手工关闭
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

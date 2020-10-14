@@ -26,7 +26,7 @@
                 <th>当前流程</th>
                 <th>{:lang('REGISTRATION_TIME')}</th>
                 <th>{:lang('STATUS')}</th>
-                <th>{:lang('ACTIONS')}</th>
+                <th>用户轨迹</th>
             </tr>
             </thead>
             <tbody>
@@ -57,19 +57,8 @@
                         </switch>
                     </td>
                     <td>
-                        <neq name="vo.id" value="1">
-                            <empty name="vo.user_status">
-                                <a class="btn btn-xs btn-success js-ajax-dialog-btn"
-                                   href="{:url('adminIndex/cancelban',array('id'=>$vo['id']))}"
-                                   data-msg="{:lang('ACTIVATE_USER_CONFIRM_MESSAGE')}">{:lang('ACTIVATE_USER')}</a>
-                                <else/>
-                                <a class="btn btn-xs btn-warning js-ajax-dialog-btn"
-                                   href="{:url('adminIndex/ban',array('id'=>$vo['id']))}"
-                                   data-msg="{:lang('BLOCK_USER_CONFIRM_MESSAGE')}">{:lang('BLOCK_USER')}</a>
-                            </empty>
-                            <else/>
-                            <a class="btn btn-xs btn-warning disabled">{:lang('BLOCK_USER')}</a>
-                        </neq>
+                        <a class="btn btn-xs btn-primary" href="{:url('university/AdminExamination/log',['id'=>$vo.id])}">轨迹</a>
+                        <a class="btn btn-xs btn-primary" href="{:url('AdminUser/edit',['id'=>$vo.id])}">编辑/查看</a>
                     </td>
                 </tr>
             </foreach>

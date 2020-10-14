@@ -44,4 +44,14 @@ class ProcessLogModel extends Model
         }
         return $categories;
     }
+
+    public function user()
+    {
+        return $this->hasOne('app\user\model\UserModel','id', 'user_id');
+    }
+
+    public function process()
+    {
+        return $this->hasOne('ExaminationProcessModel','id', 'process_id');
+    }
 }

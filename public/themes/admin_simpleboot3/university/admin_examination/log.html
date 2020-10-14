@@ -1,0 +1,35 @@
+<include file="public@header"/>
+</head>
+<body>
+<div class="wrap">
+    <ul class="nav nav-tabs">
+        <li class="active"><a>用户轨迹</a></li>
+        <li class=""><a href="{:url('user/AdminUser/index')}">用户列表</a></li>
+    </ul>
+</br>
+    <form method="post" class="js-ajax-form">
+        <table class="table table-hover table-bordered">
+            <thead>
+            <tr>
+                <th>流程</th>
+                <th>状态</th>
+                <th>备注</th>
+                <th>添加时间</th>
+            </tr>
+            </thead>
+            <tbody>
+            <foreach name="infos" item="vo">
+                <tr>
+                    <td>{$vo.process.name}</td>
+                    <td><if condition="$vo.status == '0'">待处理</if><if condition="$vo.status == '1'">处理中</if><if condition="$vo.status == '2'">处理完成</if></td>
+                    <td>{$vo.memo}</td>
+                    <td>{:date('Y-m-d H:i:s',$vo['create_time'])}</td>
+                </tr>
+            </foreach>
+            </tbody>
+        </table>
+    </form>
+</div>
+<script src="__STATIC__/js/admin.js"></script>
+</body>
+</html>

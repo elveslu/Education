@@ -157,4 +157,58 @@ class AdminUserController extends AdminBaseController
     }
 
 
+    public function edit($id){
+
+        $userModel = new UserModel();
+        $info = $userModel->where(['id'=>$id])->find();
+
+        $this->assign('info', $info);
+        return $this->fetch();
+    }
+
+    public function editPost(){
+        $data = $this->request->param();
+
+        if(!$data['password']){
+            unset($data['password']);
+        }
+
+        $rules = [
+            'user_nickname'  => 'require',
+            'id_card'     => 'require',
+            'mobile' => 'require',
+            'sex'     => 'require',
+        ];
+
+        $validate = new \think\Validate($rules);
+        $validate->message([
+            'user_nickname.require'     => '姓名不能为空',
+            'id_card.require' => '身份证号码不能为空',
+            'mobile.require'     => '手机号不能为空',
+            'sex.require'     => '请选择性别',
+        ]);
+
+        if (!$validate->check($data)) {
+            $this->error($validate->getError());
+        }
+
+        if(!cmf_check_mobile($data['mobile'])){
+            $this->error('请填写正确的手机号');
+        }
+
+        $userModel = new UserModel();
+        $user_id = $userModel->editUser($data);
+
+        if($user_id){
+            $this->success('操作成功！', url('AdminUser/index'));
+        }else{
+            if($user_id == 0){
+                $this->error('操作失败！没有改变数据！');
+            }else{
+                $this->error('操作失败！');
+            }
+        }
+    }
+
+
 }
