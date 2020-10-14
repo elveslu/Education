@@ -139,4 +139,22 @@ class AdminUserController extends AdminBaseController
     }
 
 
+    //选择所属专业
+    public function select()
+    {
+        $ids                 = $this->request->param('ids');
+        $name = $this->request->param('name');
+        $university_id                 = $this->request->param('university_id');
+        $selectedIds         = explode(',', $ids);
+
+
+        $userModel = new UserModel();
+        $categoryTree = $userModel->adminCategoryTableTree($selectedIds,$name);
+
+        $this->assign('selectedIds', $selectedIds);
+        $this->assign('categories_tree', $categoryTree);
+        return $this->fetch();
+    }
+
+
 }

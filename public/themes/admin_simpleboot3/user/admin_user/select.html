@@ -1,0 +1,79 @@
+<include file="public@header"/>
+</head>
+<body>
+<div class="wrap js-check-wrap">
+    <form class="well form-inline margin-top-20" method="post" action="{:url('user/AdminUser/select')}">
+        学员名称：
+        <input class="" type="text" name="name" style="width: 200px;" value="{:input('request.name')}"
+               placeholder="学员">
+        <input type="submit" class="btn btn-primary" value="搜索"/>
+        <a class="btn btn-danger" href="{:url('user/AdminUser/select')}">清空</a>
+    </form>
+    <form method="post" class="js-ajax-form" action="{:url('AdminCategory/listorders')}">
+        <table class="table table-hover table-bordered table-list">
+            <thead>
+            <tr>
+                <th width="16">
+                    <label>
+
+                    </label>
+                </th>
+                <th width="50">ID</th>
+                <th>用户名称</th>
+            </tr>
+            </thead>
+            <tbody>
+            <foreach name="categories_tree" item="vo" key="action">
+                <tr class="data-item-tr">
+                    <td>
+                        <input type="radio" name="ids[]" class="js-check" value='{$vo.id}' data-name="{$vo.user_nickname}"
+                               data-yid='js-check-y' data-xid='js-check-x' {$vo.checked}>
+                    </td>
+                    <td>{$vo.id}</td>
+                    <td>{$vo.user_nickname}</td>
+                </tr>
+            </foreach>
+            </tbody>
+        </table>
+    </form>
+</div>
+<script src="__STATIC__/js/admin.js"></script>
+<script>
+    $('.data-item-tr').click(function (e) {
+        var $this = $(this);
+        if ($(e.target).is('input')) {
+            return;
+        }
+
+        var $input = $this.find('input');
+        if ($input.is(':checked')) {
+            $input.prop('checked', false);
+        } else {
+            $input.prop('checked', true);
+        }
+    });
+
+    function confirm() {
+        var selectedCategoriesId   = [];
+        var selectedCategoriesName = [];
+        var selectedCategories     = [];
+        $('.js-check:checked').each(function () {
+            var $this = $(this);
+            selectedCategoriesId.push($this.val());
+            selectedCategoriesName.push($this.data('name'));
+
+            selectedCategories.push({
+                id: $this.val(),
+                name: $this.data('name')
+            });
+        });
+
+        return {
+            selectedCategories: selectedCategories,
+            selectedCategoriesId: selectedCategoriesId,
+            selectedCategoriesName: selectedCategoriesName
+        };
+    }
+</script>
+</body>
+</html>

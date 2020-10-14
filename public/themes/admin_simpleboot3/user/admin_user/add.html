@@ -70,6 +70,7 @@
     <form action="{:url('AdminUser/addPost')}" method="post" class="form-horizontal js-ajax-form margin-top-20">
         <div class="row">
             <div class="col-md-9">
+                必填项
                 <table class="table table-bordered">
                     <tr>
                         <th width="100">真实姓名<span class="form-required">*</span></th>
@@ -125,7 +126,80 @@
 
                 </table>
 
+                选填项
+                <table class="table table-bordered">
+                    <tr>
+                        <th width="100">年龄</th>
+                        <td>
+                            <input class="form-control" type="text" name="age" />
+                        </td>
+                        <th width="100">是否需要学位</th>
+                        <td>
+                            <select class="form-control" name="degree">
+                                <option value="0" checked>不需要</option>
+                                <option value="1">需要</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th width="100">参考地点</th>
+                        <td>
+                            <input class="form-control" type="text" name="location" />
+                        </td>
+                        <th width="100">当前最高学历</th>
+                        <td>
+                            <input class="form-control" type="text" name="highest_education" />
+                        </td>
+                    </tr>
 
+                    <tr>
+                        <th width="100">通讯地址</th>
+                        <td>
+                            <input class="form-control" type="text" name="address" />
+                        </td>
+                        <th width="100">民族</th>
+                        <td>
+                            <input class="form-control" type="text" name="nation" />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th width="100">工作单位</th>
+                        <td>
+                            <input class="form-control" type="text" name="work_unit" />
+                        </td>
+                        <th width="100">政治面貌</th>
+                        <td>
+                            <input class="form-control" type="text" name="political_outlook" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th width="100">是否学信网认证</th>
+                        <td>
+                            <select class="form-control" name="authentication">
+                                <option value="0" checked>认证</option>
+                                <option value="1">未认证</option>
+                            </select>
+                        </td>
+                        <th width="100">推荐人</th>
+                        <td>
+                            <div class="col-md-6 col-sm-10">
+                                <input class="form-control" type="text" style="width:400px;"  value=""
+                                       placeholder="请选择推荐人" onclick="doSelectRecommender();" id="js-Recommender-name-input"
+                                       readonly/>
+                                <input class="form-control" type="hidden" value="" name="Recommender"
+                                       id="js-Recommender-id-input"/>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th width="10%">备注<span class="form-required"></span></th>
+                        <td width="90%" colspan="3">
+                            <textarea class="form-control" id="input-remark" name="memo"></textarea>
+                        </td>
+                    </tr>
+
+                </table>
 
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
@@ -191,6 +265,29 @@
                 }
                 $('#js-Professional-id-input').val(selectedCategories.selectedCategoriesId.join(','));
                 $('#js-Professional-name-input').val(selectedCategories.selectedCategoriesName.join(' '));
+                layer.close(index); //如果设定了yes回调，需进行手工关闭
+            }
+        });
+    }
+
+    //选择推荐人
+    function doSelectRecommender() {
+        var selectedCategoriesId = $('#js-Recommender-id-input').val();
+        openIframeLayer("{:url('user/AdminUser/select')}?ids=" + selectedCategoriesId, '请选择所属专业', {
+            area: ['700px', '400px'],
+            btn: ['确定', '取消'],
+            move: '.layui-layer-title',
+            moveOut: true,
+            yes: function (index, layero) {
+                //do something
+                var iframeWin = window[layero.find('iframe')[0]['name']];
+                var selectedCategories = iframeWin.confirm();
+                if (selectedCategories.selectedCategoriesId.length == 0) {
+                    layer.msg('请选择推荐人');
+                    return;
+                }
+                $('#js-Recommender-id-input').val(selectedCategories.selectedCategoriesId.join(','));
+                $('#js-Recommender-name-input').val(selectedCategories.selectedCategoriesName.join(' '));
                 layer.close(index); //如果设定了yes回调，需进行手工关闭
             }
         });

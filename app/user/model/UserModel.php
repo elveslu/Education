@@ -12,6 +12,7 @@ namespace app\user\model;
 
 use think\Db;
 use think\Model;
+use tree\Tree;
 
 class UserModel extends Model
 {
@@ -347,7 +348,19 @@ class UserModel extends Model
                 'avatar'          => $avatar,
                 'sex'             => $user['sex'],
                 'school'         =>$user['school'],
-                'major'          =>$user['major']
+                'major'          =>$user['major'],
+                'age'            =>$user['age'],
+                'degree'            =>$user['degree'],
+                'location'            =>$user['location'],
+                'highest_education'            =>$user['highest_education'],
+                'address'            =>$user['address'],
+                'nation'            =>$user['nation'],
+                'work_unit'            =>$user['work_unit'],
+                'political_outlook'            =>$user['political_outlook'],
+                'authentication'            =>$user['authentication'],
+                'Recommender'            =>$user['Recommender'],
+                'memo'            =>$user['memo'],
+                'id_card'            =>$user['id_card'],
             ];
             $user_id = $userModel->insertGetId($data);
             return $user_id;
@@ -374,4 +387,42 @@ class UserModel extends Model
     {
         return $this->hasOne('app\university\model\ExaminationProcessModel','id', 'current_coordinates');
     }
+
+    /**
+     * 分类树形结构
+     * @param int    $currentIds
+     * @param string $tpl
+     * @return string
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function adminCategoryTableTree($currentIds = 0,$name = '')
+    {
+        //店铺状态开启
+        $where = [];
+        $where['user_status'] = '1';
+        if($name){
+            $where['user_nickname'] = ['like',"%$name%"];
+        }
+        $categories = $this->where($where)->select()->toArray();
+
+        return $this->getTree($currentIds,$categories);
+    }
+
+    public function getTree($currentIds = 0, $categories){
+        $tree       = new Tree();
+        $tree->icon = ['&nbsp;&nbsp;│', '&nbsp;&nbsp;├─', '&nbsp;&nbsp;└─'];
+        $tree->nbsp = '&nbsp;&nbsp;';
+        if (!is_array($currentIds)) {
+            $currentIds = [$currentIds];
+        }
+
+        foreach ($categories as &$item) {
+            $item['checked'] = in_array($item['id'], $currentIds) ? "checked" : "";
+            $item['selected'] = in_array($item['id'], $currentIds) ? "selected" : "";
+        }
+        return $categories;
+    }
+
 }
