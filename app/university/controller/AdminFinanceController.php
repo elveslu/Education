@@ -38,22 +38,33 @@ class AdminFinanceController extends AdminBaseController
      */
     public function index()
     {
-        $where   = [];
+        $financeModel = new FinanceModel();
+        $where = [];
         $request = input('request.');
 
         if (!empty($request['keyword'])) {
             $keyword = $request['keyword'];
 
-            $where['memo']    = ['like', "%$keyword%"];
+            $where['memo'] = ['like', "%$keyword%"];
         }
-        $financeModel = new FinanceModel();
-        $usersQuery = $financeModel->where($where)->order("create_time DESC");
 
-        $list = $usersQuery->paginate(50);
-        // 获取分页显示
-        $page = $list->render();
-        $this->assign('list', $list);
-        $this->assign('page', $page);
+        if (!empty($request['name'])) {
+            $name = $request['name'];
+            $list = $financeModel->hasWhere('user',['user_nickname'=>['like',"%$name%"]])->select();
+            $this->assign('list', $list);
+            $this->assign('page', '');
+        } else {
+
+            $usersQuery = $financeModel->where($where)->order("create_time DESC");
+
+            $list = $usersQuery->paginate(50);
+            // 获取分页显示
+            $page = $list->render();
+            $this->assign('list', $list);
+            $this->assign('page', $page);
+        }
+
+
         // 渲染模板输出
         return $this->fetch();
     }
