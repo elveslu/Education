@@ -1,0 +1,68 @@
+<include file="public@header"/>
+</head>
+<body>
+<div class="wrap">
+    <ul class="nav nav-tabs">
+        <li class="active"><a>财务明细</a></li>
+        <li class=""><a href="{:url('AdminFinance/addDetail',['finance_id'=>$financeInfo.id])}">添加明细</a></li>
+    </ul>
+    <form method="post" class="js-ajax-form">
+        总账   <p style="color: #FF0000">盈亏:{$financeInfo.amount-$financeInfo.base_price-$financeInfo.payment_slip}</p>
+        <table class="table table-hover table-bordered">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>学员</th>
+                <th>标准售价</th>
+                <th>实际售价</th>
+                <th>成本价</th>
+                <th>实收金额</th>
+                <th>待收金额</th>
+                <th>支出费用</th>
+                <th>备注</th>
+                <th>创建时间</th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{$financeInfo.id}</td>
+                    <td>{$financeInfo.user.user_nickname}</td>
+                    <td>{$financeInfo.price}</td>
+                    <td>{$financeInfo.real_price}</td>
+                    <td>{$financeInfo.base_price}</td>
+                    <td>{$financeInfo.amount}</td>
+                    <td>{$financeInfo.collection_amount}</td>
+                    <td>{$financeInfo.payment_slip}</td>
+                    <td>{$financeInfo.memo}</td>
+                    <td>{:date('Y-m-d H:i:s',$financeInfo['create_time'])}</td>
+                </tr>
+            </tbody>
+        </table>
+        明细
+        <table class="table table-hover table-bordered">
+            <thead>
+            <tr>
+                <th>单据id</th>
+                <th>单据类型</th>
+                <th>金额</th>
+                <th>备注</th>
+                <th>创建时间</th>
+            </tr>
+            </thead>
+            <tbody>
+            <foreach name="financeBoundInfo" item="vo">
+                <tr>
+                    <td>{$vo.bound_id}</td>
+                    <td><if condition="$vo.type == 'inBound'">入账</if><if condition="$vo.type == 'outBound'">出账</if></td>
+                    <td>{$vo.amount}</td>
+                    <td>{$vo.memo}</td>
+                    <td>{:date('Y-m-d H:i:s',$vo['create_time'])}</td>
+                </tr>
+            </foreach>
+            </tbody>
+        </table>
+    </form>
+</div>
+<script src="__STATIC__/js/admin.js"></script>
+</body>
+</html>

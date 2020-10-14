@@ -1,0 +1,192 @@
+<include file="public@header"/>
+<style>
+    .dropdown {
+        position: relative;
+        font-size: 14px;
+        color: #333;
+    }
+    .dropdown .dropdown-list {
+        padding: 12px;
+        background: #fff;
+        position: absolute;
+        top: 30px;
+        left: 2px;
+        right: 2px;
+        box-shadow: 0 1px 2px 1px rgba(0, 0, 0, 0.15);
+        transform-origin: 50% 0;
+        transform: scale(1, 0);
+        transition: transform .15s ease-in-out .15s;
+        max-height: 26vh;
+        overflow-y: scroll;
+    }
+    .dropdown .dropdown-option {
+        display: block;
+        padding: 8px 12px;
+        opacity: 0;
+        transition: opacity .15s ease-in-out;
+        font-weight: normal;
+    }
+    .dropdown .dropdown-label {
+        display: block;
+        height: 30px;
+        background: #fff;
+        border: 1px solid #ccc;
+        padding: 6px 12px;
+        line-height: 1;
+        cursor: pointer;
+        max-width: 550px;
+        overflow-x: hidden;
+        white-space: nowrap;
+        border-radius: 4px;
+    }
+    .dropdown .dropdown-label:before {
+        content: '▼';
+        float: right;
+    }
+    .dropdown.on .dropdown-list {
+        transform: scale(1, 1);
+        transition-delay: 0s;
+    }
+    .dropdown.on .dropdown-list .dropdown-option {
+        opacity: 1;
+        transition-delay: .2s;
+    }
+    .dropdown.on .dropdown-label:before {
+        content: '▲';
+    }
+    .dropdown [type="checkbox"] {
+        position: relative;
+        top: -1px;
+        margin-right: 4px;
+    }
+</style>
+</head>
+<body>
+<div class="wrap js-check-wrap">
+    <ul class="nav nav-tabs">
+        <li><a href="{:url('AdminExamination/index')}">流程列表</a></li>
+        <li class="active"><a href="javascript:;">添加流程</a></li>
+    </ul>
+    <form action="{:url('AdminExamination/editPost')}" method="post" class="form-horizontal js-ajax-form margin-top-20">
+        <div class="row">
+            <div class="col-md-9">
+                <table class="table table-bordered">
+                    <tr>
+                        <input class="form-control" type="hidden" name="id" value="{$data.id}"/>
+                        <th width="10%">流程名称<span class="form-required">*</span></th>
+                        <td width="40%">
+                            <input class="form-control" type="text" name="name" value="{$data.name}"/>
+                        </td>
+                        <th width="10%">流程状态<span class="form-required">*</span></th>
+                        <td width="40%">
+                            <label><input type="radio" name="status" value="0" <if condition="$data.status == '0'">checked</if>>入学前</label>
+                            <label><input type="radio" name="status" value="1" <if condition="$data.status == '1'">checked</if>>入学后</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th width="10%">流程顺序<span class="form-required">*</span></th>
+                        <td width="40%">
+                            <input class="form-control" type="text" name="order" value="{$data.order}"/>
+                        </td>
+                        <th width="10%">是否特殊类目<span class="form-required">*</span></th>
+                        <td width="40%">
+                            <div class="col-md-6 col-sm-10">
+                                <input class="form-control" type="text" style="width:400px;"  value="{$data.cate.name}"
+                                       placeholder="请选择所属类目" onclick="doSelectCate();" id="js-cate-name-input"
+                                       readonly/>
+                                <input class="form-control" type="hidden" value="0" name="category"
+                                       id="js-cate-id-input"/>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th width="10%">流程时间<span class="form-required"></span></th>
+                        <td width="40%">
+                            <input type="text" name="time" class="form-control js-bootstrap-datetime"
+                                   value="{$data.time}">
+                        </td>
+                        <th width="10%">是否精确时间<span class="form-required">*</span></th>
+                        <td width="40%">
+                            <label><input type="radio" name="is_accurate" value="0" <if condition="$data.is_accurate == '0'">checked</if>>不精确</label>
+                            <label><input type="radio" name="is_accurate" value="1" <if condition="$data.is_accurate == '1'">checked</if>>精确</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th width="10%">是否关联院校<span class="form-required"></span></th>
+                        <td width="40%">
+                            <label><input type="radio" name="is_school" value="0" <if condition="$data.is_school == '0'">checked</if>>不关联</label>
+                            <label><input type="radio" name="is_school" value="1" <if condition="$data.is_school == '1'">checked</if>>关联</label>
+                        </td>
+                        <th width="10%">是否前台展示<span class="form-required">*</span></th>
+                        <td width="40%">
+                            <label><input type="radio" name="is_show" value="0" <if condition="$data.is_show == '0'">checked</if>>不展示</label>
+                            <label><input type="radio" name="is_show" value="1" <if condition="$data.is_show == '1'">checked</if>>展示</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th width="10%">备注<span class="form-required"></span></th>
+                        <td width="90%" colspan="3">
+                            <textarea class="form-control" id="input-remark" name="memo">{$data.memo}</textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th width="10%">前台展示<span class="form-required"></span></th>
+                        <td width="90%" colspan="3">
+                            <textarea class="form-control"  name="before_memo">{$data.before_memo}</textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th width="10%">后台展示<span class="form-required"></span></th>
+                        <td width="90%" colspan="3">
+                            <textarea class="form-control"  name="after_memo">{$data.after_memo}</textarea>
+                        </td>
+                    </tr>
+
+                </table>
+
+
+
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-primary js-ajax-submit">{:lang('ADD')}</button>
+                        <a class="btn btn-default" href="javascript:history.back(-1);">{:lang('BACK')}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript" src="__STATIC__/js/admin.js"></script>
+<script type="text/javascript" src="__STATIC__/js/city.data.js"></script>
+
+<script type="text/javascript">
+    (function($) {
+        initCountry();
+    })(jQuery);
+
+    //选择类目
+    function doSelectCate() {
+        var selectedCategoriesId = $('#js-cate-id-input').val();
+        openIframeLayer("{:url('university/AdminProfessionalCategory/select')}?ids=" + selectedCategoriesId, '请选择所属类目', {
+            area: ['700px', '400px'],
+            btn: ['确定', '取消'],
+            move: '.layui-layer-title',
+            moveOut: true,
+            yes: function (index, layero) {
+                //do something
+                var iframeWin          = window[layero.find('iframe')[0]['name']];
+                var selectedCategories = iframeWin.confirm();
+                if (selectedCategories.selectedCategoriesId.length == 0) {
+                    layer.msg('请选择店铺');
+                    return;
+                }
+                $('#js-cate-id-input').val(selectedCategories.selectedCategoriesId.join(','));
+                $('#js-cate-name-input').val(selectedCategories.selectedCategoriesName.join(' '));
+                layer.close(index); //如果设定了yes回调，需进行手工关闭
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

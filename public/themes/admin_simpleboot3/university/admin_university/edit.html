@@ -1,0 +1,143 @@
+<include file="public@header"/>
+<style>
+    .dropdown {
+        position: relative;
+        font-size: 14px;
+        color: #333;
+    }
+    .dropdown .dropdown-list {
+        padding: 12px;
+        background: #fff;
+        position: absolute;
+        top: 30px;
+        left: 2px;
+        right: 2px;
+        box-shadow: 0 1px 2px 1px rgba(0, 0, 0, 0.15);
+        transform-origin: 50% 0;
+        transform: scale(1, 0);
+        transition: transform .15s ease-in-out .15s;
+        max-height: 26vh;
+        overflow-y: scroll;
+    }
+    .dropdown .dropdown-option {
+        display: block;
+        padding: 8px 12px;
+        opacity: 0;
+        transition: opacity .15s ease-in-out;
+        font-weight: normal;
+    }
+    .dropdown .dropdown-label {
+        display: block;
+        height: 30px;
+        background: #fff;
+        border: 1px solid #ccc;
+        padding: 6px 12px;
+        line-height: 1;
+        cursor: pointer;
+        max-width: 550px;
+        overflow-x: hidden;
+        white-space: nowrap;
+        border-radius: 4px;
+    }
+    .dropdown .dropdown-label:before {
+        content: '▼';
+        float: right;
+    }
+    .dropdown.on .dropdown-list {
+        transform: scale(1, 1);
+        transition-delay: 0s;
+    }
+    .dropdown.on .dropdown-list .dropdown-option {
+        opacity: 1;
+        transition-delay: .2s;
+    }
+    .dropdown.on .dropdown-label:before {
+        content: '▲';
+    }
+    .dropdown [type="checkbox"] {
+        position: relative;
+        top: -1px;
+        margin-right: 4px;
+    }
+</style>
+</head>
+<body>
+<div class="wrap js-check-wrap">
+    <ul class="nav nav-tabs">
+        <li><a href="{:url('AdminUniversity/index')}">院校列表</a></li>
+        <li class="active"><a href="javascript:;">添加院校</a></li>
+    </ul>
+    <form action="{:url('AdminUniversity/editPost')}" method="post" class="form-horizontal js-ajax-form margin-top-20">
+        <input class="form-control" type="hidden" name="id" value="{$data.id}"/>
+        <div class="row">
+            <div class="col-md-9">
+                <table class="table table-bordered">
+                    <tr>
+                        <th width="10%">院校名称<span class="form-required">*</span></th>
+                        <td width="40%">
+                            <input class="form-control" type="text" name="name" value="{$data.name}"/>
+                        </td>
+                        <th width="10%">院校类型<span class="form-required">*</span></th>
+                        <td width="40%">
+                            <label><input type="radio" name="type" value="0" <if condition="$data.type == '0'">checked</if>>本科</label>
+                            <label><input type="radio" name="type" value="1" <if condition="$data.type == '1'">checked</if>>大专</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th width="10%">期中考试时间<span class="form-required"></span></th>
+                        <td width="40%">
+                            <input type="text" name="qizhong_time" class="form-control js-bootstrap-datetime"
+                                   value="{$data.qizhong_time}">
+                        </td>
+                        <th width="10%">期末考试时间<span class="form-required"></span></th>
+                        <td width="40%">
+                            <input type="text" name="qimo_time" class="form-control js-bootstrap-datetime"
+                                   value="{$data.qimo_time}">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th width="10%">毕业论文时间<span class="form-required"></span></th>
+                        <td width="40%">
+                            <input type="text" name="dissertation_time" class="form-control js-bootstrap-datetime"
+                                   value="{$data.dissertation_time}">
+                        </td>
+                        <th width="10%">毕业时间<span class="form-required"></span></th>
+                        <td width="40%">
+                            <input type="text" name="finish_time" class="form-control js-bootstrap-datetime"
+                                   value="{$data.finish_time}">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th width="10%">备注<span class="form-required"></span></th>
+                        <td width="90%" colspan="3">
+                            <textarea class="form-control" id="input-remark" name="memo">{$data.memo}</textarea>
+                        </td>
+                    </tr>
+
+                </table>
+
+
+
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-primary js-ajax-submit">{:lang('ADD')}</button>
+                        <a class="btn btn-default" href="javascript:history.back(-1);">{:lang('BACK')}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript" src="__STATIC__/js/admin.js"></script>
+<script type="text/javascript" src="__STATIC__/js/city.data.js"></script>
+
+<script type="text/javascript">
+    (function($) {
+        initCountry();
+    })(jQuery);
+
+
+
+</script>
+</body>
+</html>

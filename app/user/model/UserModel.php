@@ -308,4 +308,70 @@ class UserModel extends Model
         cmf_update_current_user($userInfo);
         return 0;
     }
+
+    //后台添加user用户
+    public function addUser($user,$type){
+        $userModel = new UserModel();
+        switch ($type) {
+            case 1:
+                $result = $userModel->where('user_login', $user['user_login'])->find();
+                break;
+            case 2:
+                $result = $userModel->where('mobile', $user['mobile'])->find();
+                break;
+            case 3:
+                $result = $userModel->where('user_email', $user['user_email'])->find();
+                break;
+            default:
+                $result = 0;
+        }
+        $userStatus = 1;
+
+        //是否允许开放注册
+//        if (cmf_is_open_registration()) {
+//            $userStatus = 2;
+//        }
+        $avatar = '';
+        if (!empty($user['photo_path']['thumbnail'])) {
+            $avatar = cmf_asset_relative_url($user['photo_path']['thumbnail']);
+        }
+        if (empty($result)) {
+            $data   = [
+                'mobile'          => empty($user['mobile']) ? '' : $user['mobile'],
+                'user_nickname'   => $user['user_nickname'],
+                'user_pass'       => cmf_password($user['password']),
+                'create_time'     => time(),
+                'last_login_time' => time(),
+                'user_status'     => $userStatus,
+                "user_type"       => 2,//会员
+                'avatar'          => $avatar,
+                'sex'             => $user['sex'],
+                'school'         =>$user['school'],
+                'major'          =>$user['major']
+            ];
+            $user_id = $userModel->insertGetId($data);
+            return $user_id;
+        }else{
+            return 0;
+        }
+        return -1;
+    }
+
+    //关联的学校
+    public function university()
+    {
+        return $this->hasOne('app\university\model\UniversityModel','id', 'school');
+    }
+
+    //关联的专业
+    public function majorm()
+    {
+        return $this->hasOne('app\university\model\ProfessionalModel','id', 'major');
+    }
+
+    //关联的流程
+    public function coordinates()
+    {
+        return $this->hasOne('app\university\model\ExaminationProcessModel','id', 'current_coordinates');
+    }
 }
